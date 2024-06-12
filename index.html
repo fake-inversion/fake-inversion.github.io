@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="FakeInversion: Learning to Detect Images from Unseen Text-to-Image Models by Inverting Stable Diffusion">
+    <meta name="keywords" content="diffusion, deepfake, detection, inversion, ddim">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fake Inversion</title>
+    <link rel="icon" type="image/x-icon" href="static/resources/fairy.png">
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="icon" href="./static/images/favicon.svg">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+    <meta property="og:image" content="./static/resources/method.png"/>
+</head>
+<body>
+
+
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 publication-title">Fake-Inversion:</h1>
+                    <h1 class="title is-2 publication-title">Learning to Detect Images from Unseen<br>Models by
+                        Inverting Stable Diffusion</h1>
+                    <h1 class="title is-3 publication-title">CVPR 2024</h1>
+                    <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://georgecazenavette.github.io/">George Cazenavette</a><sup><img
+                    src="static/resources/emoji/beaver.png" width="20"></sup>,</span>
+                        <span class="author-block">
+              <a href="https://research.google/people/avneesh-sud/">Avneesh Sud</a><sup><img
+                                src="static/resources/emoji/google.png" width="20"></sup>,</span>
+                        <span class="author-block">
+              <a href="https://research.google/people/thomas-k-leung/">Thomas Leung</a><sup><img
+                                src="static/resources/emoji/google.png" width="20"></sup>,
+            </span>
+                        <span class="author-block">
+              <a href="https://usmnb.github.io/">Ben Usman</a><sup><img src="static/resources/emoji/google.png"
+                                                                        width="20"></sup>
+            </span>
+                    </div>
+
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup><img src="static/resources/emoji/beaver.png" width="20"></sup>Massachusetts Institute of Technology,</span>
+                        <span class="author-block"><sup><img src="static/resources/emoji/google.png" width="20"></sup>Google Research</span>
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+                            <!-- Video Link. -->
+                            <!--              <span class="link-block">-->
+                            <!--                <a href="https://youtu.be/Zpq4IarZBWk"-->
+                            <!--                   class="external-link button is-normal is-rounded is-dark">-->
+                            <!--                  <span class="icon">-->
+                            <!--                      <i class="fab fa-youtube"></i>-->
+                            <!--                  </span>-->
+                            <!--                  <span>Video</span>-->
+                            <!--                </a>-->
+                            <!--              </span>-->
+                            <!-- Code Link. -->
+                            <span class="link-block">
+                <a href="./soon.html"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+                            <!-- Dataset Link. -->
+                            <!--              <span class="link-block">-->
+                            <!--                <a href="https://github.com/google/nerfies/releases/tag/0.1"-->
+                            <!--                   class="external-link button is-normal is-rounded is-dark">-->
+                            <!--                  <span class="icon">-->
+                            <!--                      <i class="far fa-images"></i>-->
+                            <!--                  </span>-->
+                            <!--                  <span>Data</span>-->
+                            <!--                  </a>-->
+                            <!--              </span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="hero teaser">
+    <div class="container is-max-desktop">
+        <div class="hero-body">
+            <h2 class="title is-2 has-text-centered">A New Gen-AI Detector</h2>
+            <img src="static/resources/method.svg" title="Fake Inversion">
+            <h2 class="subtitle has-text-justified" style="margin-bottom: 10px;">
+                <br>
+                Prior fake image detection methods
+                [<a href="https://peterwang512.github.io/CNNDetection/">1</a>,
+                <a href="https://utkarshojha.github.io/universal-fake-detection/">2</a>]
+                learn to detect fake images by simply training a classifier on the <span style="color: #38761d"><b>Original</b></span>
+                images.
+                <!--        <br><br>-->
+
+                We wish to leverage a pre-trained diffusion model (<a
+                    href="https://huggingface.co/runwayml/stable-diffusion-v1-5">Stable Diffusion 1.5</a>) to train a
+                better detection model.<br><br>
+
+                To do this, we obtain additional input features by using <a
+                    href="https://huggingface.co/learn/diffusion-course/en/unit4/2">DDIM Inversion</a>
+                and then use the <span style="color: #38761d"><b>Original</b></span>, <span style="color: #990000"><b>Inverted</b></span>,
+                <span style="color: #0B5394"><b>Reconstructed</b></span> together as the input to our model.
+            </h2>
+            <img src="static/resources/progan.svg" title="Progan vs LSUN">
+            <img src="static/resources/sd.svg" title="Stable Diffusion vs LAION">
+            <h2 class="subtitle has-text-justified" style="margin-bottom: 10px;">
+                Despite only using features extracted from a weak generator (SD v1.5),
+                our method generalizes remarkably well and can detect fake images from modern propriatary (DALL-E 3,
+                Midjourney, Imagen, etc.)
+                and open-source (Kandinsky, PixArt-α, etc.) generators that were never seen during training.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<section class="hero teaser">
+    <div class="container is-max-desktop">
+        <div class="hero-body">
+            <h2 class="title is-2 has-text-centered">A New Evaluation Benchmark</h2>
+
+
+            <div style="display: flex; justify-content: center; align-items: flex-start; text-align: center; margin-bottom: 10px">
+                <div style="max-width: 50%; margin-right: 1%; margin-left: 1%">
+                    <figure>
+                        <img src="static/resources/laion_bias/laion.png">
+                        <figcaption style="text-align: center;"><b>LAION</b><br><i>“Paintings By 刘诚 Liu Cheng Fine Art
+                            and
+                            You Painting”
+                        </i></figcaption>
+                    </figure>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1%; max-width: 45% /* Adjust as needed */">
+                    <div style="width: 100%">
+                        <figure>
+                            <img src="static/resources/laion_bias/dalle.jfif">
+                            <figcaption><b>DALLE&#8209;3</b></figcaption>
+                        </figure>
+                    </div>
+                    <div>
+                        <figure>
+                            <img src="static/resources/laion_bias/mj.png">
+                            <figcaption><b>Midjourney&nbsp;v6</b></figcaption>
+                        </figure>
+                    </div>
+                    <div>
+                        <figure>
+                            <img src="static/resources/laion_bias/pixart.png" style="object-fit: cover">
+                            <figcaption><b>PixArt&#8209;α</b></figcaption>
+                        </figure>
+                    </div>
+                    <div>
+                        <figure>
+                            <img src="static/resources/laion_bias/playground.png">
+                            <figcaption><b>Playground&nbsp;2.5</b></figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="subtitle has-text-justified">
+                Existing evaluation methods for GenAI detectors only use LAION images as the "real" samples in the test
+                set, despite generated "fake" images typically having very different "styles" than the "real" LAION
+                images (see above).
+                Unfortunately, this often results in a style mismatch between the "real" and "fake" test images, calling
+                into question whether or not the model is actually detecting "realness" or merely some kind of style
+                bias.
+                <br>
+                <br>
+                To help alleviate these concerns, we introduce a new set of benchmarks intended to show how well a model
+                would perform in-the-wild.
+                We do this by searching the (Pre-GenAI) Internet for images that most closely match the style and
+                content of the "fake" images obtained from the generative model in question.
+            </h2>
+            <img src="static/resources/ris.svg" title="Reverse Image Search" style="margin-bottom: 10px">
+            <h2 class="subtitle has-text-justified">
+                When collected this way, the distribution of "real" test images is much closer than LAION to that of the
+                "fake" images from the generator.
+            </h2>
+            <img src="static/resources/fid.svg" title="Reverse Image Search">
+        </div>
+    </div>
+</section>
+
+<section class="hero teaser">
+    <div class="container is-max-desktop">
+        <div class="hero-body">
+            <h2 class="title is-2 has-text-centered" id="browsing">Image Browsing</h2>
+
+            <h2 class="subtitle has-text-justified">
+                <br>
+                Please use the following links to view previews of our new test sets.
+                <b>Fake</b> images are on the left, and the corresponding <b>Real</b> images found via reverse image
+                search are on the right.
+            </h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); text-align: center">
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/dalle3.html">DALL-E 3</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/midjourney.html">Midjourney</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/kandinsky2.html">Kandinsky 2</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/kandinsky3.html">Kandinsky 3</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/pixart1024.html">PixArt-α</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/playground-25.html">Playground 2.5</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/sdxl.html">SDXL</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/sdxl-dpo.html">SDXL DPO</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/segmoe.html">Seg-MoE</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/ssd1b.html">SSD-1B</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/stable-cascade.html">Stable-Cascade</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/vega.html">Segmind Vega</a></h2></div>
+                <div style="padding-bottom: 0.5vh"><h2 class="subtitle has-text-justified"><a
+                        href="static/viewing/wurstchen2.html">Wurstchen 2</a></h2></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+        <h2 class="title">BibTeX</h2>
+        <pre><code>@article{cazenavette2024fake,
+  author    = {Cazenavette, George and Sud, Avneesh and Leung, Thomas and Usman, Ben},
+  title     = {{Fake-Inversion}: Learning to Detect Images from Unseen Models by Inverting Stable Diffusion},
+  journal   = {CVPR},
+  year      = {2024},
+}</code></pre>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop content">
+        <div class="has-text-justified">
+            <h2 class="title is-5 has-text-justified">References</h2>
+            [<a href="https://peterwang512.github.io/CNNDetection/">1</a>] Wang et al., CNN-generated images are
+            surprisingly easy to spot...for now (CVPR 2022)<br/>
+            [<a href="https://utkarshojha.github.io/universal-fake-detection/">2</a>] Ojha et al., Towards Universal
+            Fake Image Detectors that Generalize Across Generative Models (CVPR 2023)
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="content has-text-centered">
+                    <p>
+                        Website source based on <a href="https://github.com/nerfies/nerfies.github.io">this source
+                        code</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
